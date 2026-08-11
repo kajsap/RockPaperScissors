@@ -1,6 +1,5 @@
 import random 
 
-
 def determine_winner(player, computer, winning_moves):
     if player == computer:
         winner = "tie"
@@ -11,16 +10,24 @@ def determine_winner(player, computer, winning_moves):
     return winner
         
 
-def display_score(winner, score):
+def update_score(winner, score):
     if winner == "tie":
-        print(f"It is a tie. \nYour score is {score}")
+        score["ties"] += 1
+        print("It is a tie.")
     elif winner == "player":
-        score += 1
-        print(f"You win! \nYour score is {score}")
+        score["wins"] += 1
+        print("You win!")
     else:
-        print(f"You lose :( \nYour score is {score}")
+        score["losses"] += 1
+        print(f"You lose :(")
 
-    return score
+def display_score(score):
+    print("-----------------")
+    print("     Score")
+    print("-----------------")
+    for key, value in score.items():
+        print(f"{key.capitalize()}: {value}")
+    print("-----------------")
 
       
 def play_game():
@@ -30,7 +37,12 @@ def play_game():
         "scissors": "paper"
     }
 
-    score = 0
+    score = {
+        "wins": 0,
+        "losses": 0,
+        "ties": 0
+    }
+
     running = True
     
     while running:
@@ -43,7 +55,8 @@ def play_game():
         print(f'Player: {player} \nComputer: {computer}')
 
         winner = determine_winner(player, computer, winning_moves)
-        score = display_score(winner, score)
+        update_score(winner, score)
+        display_score(score)
 
         play_again = input("Play again? (y/n): ").lower()
         if not play_again == "y":
