@@ -1,4 +1,40 @@
-import random 
+import random
+
+def determine_mode():
+    valid = [1,2,3]
+    game_mode = None
+    while game_mode not in valid:
+        print("1) First to 3 \n2) First to 5 \n3) First to 8")
+
+        try:
+            game_mode = int(input("Which mode do you want to play (1,2,3)?  "))
+
+            if game_mode not in valid:
+                print("Please choose 1, 2 or 3")
+        except ValueError:
+            print("Please enter a number")
+
+    if game_mode == 1:
+        mode = 3
+    elif game_mode == 2:
+        mode = 5
+    elif game_mode == 3:
+        mode = 8
+
+    return mode
+
+def play_round(winning_moves):
+    player = None
+    computer = random.choice(list(winning_moves))
+
+    while player not in winning_moves:
+        player = input("Enter a choice (rock, paper, scissors): ").lower()
+
+    print(f'Player: {player} \nComputer: {computer}')
+    
+    winner = determine_winner(player, computer, winning_moves)
+
+    return winner
 
 def determine_winner(player, computer, winning_moves):
     if player == computer:
@@ -9,7 +45,6 @@ def determine_winner(player, computer, winning_moves):
         winner = "computer"
     return winner
         
-
 def update_score(winner, score):
     if winner == "tie":
         score["ties"] += 1
@@ -29,7 +64,10 @@ def display_score(score):
         print(f"{key.capitalize()}: {value}")
     print("-----------------")
 
-      
+def play_again():
+    again = input("Play again? (y/n): ").lower()
+    return again == "y"
+
 def play_game():
     winning_moves = {
         "rock": "scissors",
@@ -43,26 +81,36 @@ def play_game():
         "ties": 0
     }
 
-    running = True
-    
-    while running:
-        player = None
-        computer = random.choice(list(winning_moves))
+    mode = determine_mode()
+    end_game = False
+    round_number = 1
 
-        while player not in winning_moves:
-            player = input("Enter a choice (rock, paper, scissors): ").lower()
+    while not end_game:
+        print(f"---- Round {round_number} ----")
 
-        print(f'Player: {player} \nComputer: {computer}')
-
-        winner = determine_winner(player, computer, winning_moves)
+        winner = play_round(winning_moves)
         update_score(winner, score)
         display_score(score)
 
-        play_again = input("Play again? (y/n): ").lower()
-        if not play_again == "y":
-            running = False
+        if score["wins"] == mode:
+            print("CONGRATULATIONS YOU WIN!!!")
+            end_game = True
+        elif score["losses"] == mode:
+            print("OH NO!! The computer won :(")
+            end_game = True
 
-    print("Thanks for playing")
+        round_number += 1
 
-play_game()
+def main():
+    running = True
+
+    while running:
+        print("START GAME")
+        play_game()
+        print("GAME FINISHED ")
+        running = play_again()
+
+    print("Thanks for playing!")
+
+main()
 
