@@ -1,8 +1,14 @@
 import random
 
 def determine_mode():
-    valid = [1,2,3]
+    valid = [1, 2, 3]
     game_mode = None
+    modes = {
+        1: 3, 
+        2: 5,
+        3: 8
+    }
+
     while game_mode not in valid:
         print("1) First to 3 \n2) First to 5 \n3) First to 8")
 
@@ -14,14 +20,7 @@ def determine_mode():
         except ValueError:
             print("Please enter a number")
 
-    if game_mode == 1:
-        mode = 3
-    elif game_mode == 2:
-        mode = 5
-    elif game_mode == 3:
-        mode = 8
-
-    return mode
+    return modes[game_mode]
 
 def play_round(winning_moves):
     player = None
@@ -29,6 +28,9 @@ def play_round(winning_moves):
 
     while player not in winning_moves:
         player = input("Enter a choice (rock, paper, scissors): ").lower()
+
+        if player not in winning_moves:
+            print("Invalid choice. Please chose between rock, paper, scissors.")
 
     print(f'Player: {player} \nComputer: {computer}')
     
@@ -38,12 +40,11 @@ def play_round(winning_moves):
 
 def determine_winner(player, computer, winning_moves):
     if player == computer:
-        winner = "tie"
+        return "tie"
     elif winning_moves[player] == computer:
-        winner = "player"
+        return"player"
     else:
-        winner = "computer"
-    return winner
+        return "computer"
         
 def update_score(winner, score):
     if winner == "tie":
@@ -54,7 +55,7 @@ def update_score(winner, score):
         print("You win!")
     else:
         score["losses"] += 1
-        print(f"You lose :(")
+        print("You lose :(")
 
 def display_score(score):
     print("-----------------")
@@ -105,9 +106,7 @@ def main():
     running = True
 
     while running:
-        print("START GAME")
         play_game()
-        print("GAME FINISHED ")
         running = play_again()
 
     print("Thanks for playing!")
